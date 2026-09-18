@@ -62,7 +62,7 @@ python scripts/setup_check.py
 
 ```
 SKILL.md              # Agent 阅读的主指令
-USAGE-客户版.md        # 面向使用者的说明
+USAGE.md              # 面向使用者的说明
 scripts/              # 取数 / 图表 / 校验 / 导出脚本
 references/           # 分场景深度参考文档
 assets/               # 报告 HTML 模板与前端依赖（离线可用）
