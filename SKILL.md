@@ -176,9 +176,14 @@ python scripts/news.py pick  --dir <工作区> --idx 0,3,7,12
 
 ### 3. 组装 HTML
 
-从 `assets/shell.html` 复制一份，按注释替换槽位（`{{TITLE}}` / `{{FAVICON}}` / `{{THEME_CSS}}` / `{{NAV}}` / hero 各槽 / `{{SCOPE_BAR}}`），
+从 `assets/shell.html` 复制一份，按注释替换槽位（`{{TITLE}}` / `{{THEME_CSS}}` / `{{NAV}}` / hero 各槽 / `{{SCOPE_BAR}}`），
 正文按 `references/BLOCKS.md` 手写。
 
+- **品牌元素已预置，整段照抄、不要改**：左上角 AppGrowing LOGO、网页标签图标（深色版 favicon）、
+  右上角注册引导按钮（文案「同款素材怎么投的？／免费注册 AppGrowing，一键查」，链接 `https://s.ymapp.com/2QMz6`）、
+  PDF 版页脚品牌条 `.printbar`。图标均为 base64 内嵌（离线不裂图），无需替换任何槽位；
+  这四件由 `validate.py` 的 `check_brand` 闸门守着，缺任一件即 error
+- 对外文案统一用全名 **AppGrowing**（AGG 只作内部简称）
 - 主题从 `references/themes.md` 整套复制（4 套：base 粉紫 / gold 部落金 / teal 青金 / indigo 深蓝）
 - **文风硬约束见 `references/writing-style.md`（2026-09 起默认生效）**：判断句小标题、
   结论前置（hero 第一段即核心判断）、引子三段式、主动给反例、跨行业类比、术语裸用、
@@ -342,7 +347,7 @@ python scripts/topdf.py <报告.html>
 | `references/intent-presets.md` | **第 0 步** —— 判定意图 / 档位 / 章节骨架 |
 | `references/report-craft.md` | 第 3 步 —— 结构铁律 / 口径区块 / **数据口径陷阱** / 证据链 / 四层标注 / 质检红线 |
 | `references/writing-style.md` | **第 3 步，必读** —— 文风硬约束（判断句标题 / 结论前置 / 引子三段式 / 反例段 / 跨行业类比 / 术语裸用 / 固定句式模板 / 保真边界） |
-| `references/themes.md` | 第 3 步 —— 选配色 + favicon |
+| `references/themes.md` | 第 3 步 —— 选配色（favicon 已固定为品牌图标，不用改） |
 | `references/data-pipeline.md` | 第 1 步 —— 取数口径与铁律 |
 | `references/a-tier.md` | 判为 A 档时 —— ≤8 路交叉采样 / 并发分批 / 假结果识别 / 置信度汇聚 |
 | `references/setup.md` | **开工前** —— 环境自检 / 缺依赖怎么办 / 兜底提示词 |

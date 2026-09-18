@@ -591,7 +591,8 @@ def check_offline(h, r):
         hosts = set(re.findall(r"https?://([a-z0-9.-]+)", m))
         hosts -= {"appgrowing.ai", "www.appgrowing.ai",
                   "appgrowing-global.youcloud.com", "news.google.com",
-                  "www.w3.org"}
+                  "www.w3.org",
+                  "s.ymapp.com"}          # 官方注册短链(右上角 .regcta 的 href)
         hosts = {d for d in hosts if not d.endswith(".appgrowing.ai")}
         r.ok("CDN 外链 = 0")
         if hosts:
@@ -611,6 +612,43 @@ def check_misc(h, r):
                      (r"var DATA=", "混入了 report-full.html 的 DATA 驱动壳(本技能不用)")]:
         if re.search(pat, h):
             r.warn(msg)
+
+
+def check_brand(h, r):
+    """品牌与注册入口必须**整段照抄** shell.html,不许删改(2026-09 起)。
+
+    为什么是 err 而不是 warn:报告是对外交付物 —— 左上角 AppGrowing 标识、
+    网页标签图标、右上角注册引导按钮、PDF 页脚品牌条,这四件是报告被分享出去后
+    唯一能把客户导回 AppGrowing 的入口。少任何一件,商业闭环就断了,而
+    **其余所有检查都会是绿的**(它们只关心报告本身完不完整)。
+
+    判定口径:只认真实元素与真实链接,注释里提一句不算
+    (沿用 pitfall #29「判用法不判提及」)。
+    """
+    body = h
+    m = re.search(r'<body\b[^>]*>(.*)', h, re.S | re.I)
+    if m:
+        body = m.group(1)
+    body = re.sub(r"<!--.*?-->", " ", body, flags=re.S)
+
+    misses = []
+    if not re.search(r'<a[^>]*class="[^"]*\bregcta\b', body):
+        misses.append("右上角注册引导按钮 .regcta 缺失")
+    elif "s.ymapp.com/2QMz6" not in body:
+        misses.append("注册按钮链接不是官方短链 s.ymapp.com/2QMz6")
+    if not re.search(r'class="[^"]*\bprintbar\b', body):
+        misses.append("PDF 页脚品牌条 .printbar 缺失"
+                      "(打印时 LOGO 与按钮会被 display:none,只剩它能露品牌)")
+    if "--agg-logo" not in h:
+        misses.append("品牌 LOGO 变量 --agg-logo 缺失(左上角标识会空白)")
+    if not re.search(r'<link[^>]+rel="icon"', h):
+        misses.append('网页标签图标 <link rel="icon"> 缺失')
+
+    if misses:
+        r.err("品牌/转化入口不完整:%s —— 整段照抄 shell.html,不要删改。"
+              % ";".join(misses))
+    else:
+        r.ok("品牌与注册入口齐备(LOGO / favicon / .regcta / .printbar)")
 
 
 def check_source_badge(h, r):
@@ -956,6 +994,7 @@ def main():
     check_blockquotes(h, r)
     check_tag_balance(h, r)
     check_misc(h, r)
+    check_brand(h, r)
     check_source_badge(h, r)
     check_mindmap(h, r)
     check_news(h, r)

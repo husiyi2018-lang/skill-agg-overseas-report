@@ -40,11 +40,7 @@
 }
 ```
 
-**favicon**（替换 `{{FAVICON}}` 槽，`href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23C2185B'/%3E%3Cpath d='M24 16v32l24-16z' fill='%23fff'/%3E%3C/svg%3E"`）：
-
-```
-%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23C2185B'/%3E%3Cpath d='M24 16v32l24-16z' fill='%23fff'/%3E%3C/svg%3E
-```
+**favicon**：**已固定**为 AppGrowing 品牌图标（深色版，base64 内嵌），报告无需替换。
 
 ---
 
@@ -127,11 +123,7 @@ blockquote.fix strong{color:var(--teal)}
 details.rev summary{background:rgba(200,137,42,.13);border-color:rgba(200,137,42,.30)}
 ```
 
-**favicon**（替换 `{{FAVICON}}` 槽，`href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B8860B'/%3E%3Cpath d='M32 12l16 8v14c0 10-7 16-16 18-9-2-16-8-16-18V20z' fill='%23FFD166'/%3E%3C/svg%3E"`）：
-
-```
-%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B8860B'/%3E%3Cpath d='M32 12l16 8v14c0 10-7 16-16 18-9-2-16-8-16-18V20z' fill='%23FFD166'/%3E%3C/svg%3E
-```
+**favicon**：**已固定**为 AppGrowing 品牌图标（深色版，base64 内嵌），报告无需替换。
 
 ---
 
@@ -214,11 +206,7 @@ blockquote.fix strong{color:var(--teal)}
 details.rev summary{background:rgba(15,155,142,.13);border-color:rgba(15,155,142,.30)}
 ```
 
-**favicon**（替换 `{{FAVICON}}` 槽，`href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F9B8E'/%3E%3Ccircle cx='32' cy='32' r='16' fill='none' stroke='%23fff' stroke-width='5'/%3E%3Cpath d='M32 20v24M20 32h24' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E"`）：
-
-```
-%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F9B8E'/%3E%3Ccircle cx='32' cy='32' r='16' fill='none' stroke='%23fff' stroke-width='5'/%3E%3Cpath d='M32 20v24M20 32h24' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E
-```
+**favicon**：**已固定**为 AppGrowing 品牌图标（深色版，base64 内嵌），报告无需替换。
 
 ---
 
@@ -301,11 +289,7 @@ blockquote.fix strong{color:var(--teal)}
 details.rev summary{background:rgba(59,91,219,.13);border-color:rgba(59,91,219,.30)}
 ```
 
-**favicon**（替换 `{{FAVICON}}` 槽，`href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B5BDB'/%3E%3Cpath d='M16 44V20l16 16 16-16v24' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"`）：
-
-```
-%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B5BDB'/%3E%3Cpath d='M16 44V20l16 16 16-16v24' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E
-```
+**favicon**：**已固定**为 AppGrowing 品牌图标（深色版，base64 内嵌），报告无需替换。
 
 ---
 
