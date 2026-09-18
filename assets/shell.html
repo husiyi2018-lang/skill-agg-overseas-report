@@ -49,33 +49,31 @@ nav.side::-webkit-scrollbar{width:6px}
 .brand small{color:var(--ink2);font-size:11.5px}
 
 /* ==== AGG 品牌区（固定,不要改）================================================
-   左上角 LOGO / 右上角注册按钮里的迷你 LOGO / PDF 页眉 LOGO 都吃 --agg-logo
-   这一个变量。内嵌 base64 = 报告离线打开也不会裂图（外部链接断网就是空白）。
+   左上角 LOGO / PDF 页眉 LOGO 都吃 --agg-logo 这一个变量。
+   内嵌 base64 = 报告离线打开也不会裂图（外部链接断网就是空白）。
    换 LOGO：只替换 --agg-logo 里的 base64 字符串,其余不用动。
-   注册链接：搜 REG_LINK 就能一次性找到全部注册入口。
+   注册邀请链接：全部走 {{INVITE_URL}} 这个槽位,每个销售填自己的那条。
    ============================================================================ */
 :root{--agg-logo:url("data:image/png;base64,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")}
 nav.side .brand .logo{background-color:transparent;background-image:var(--agg-logo);
   background-position:center;background-repeat:no-repeat;background-size:contain;
   transform:none;box-shadow:none;border:0}
 
-/* 右上角固定注册按钮（客户转化入口,屏幕上常驻；打印时换成页眉品牌条） */
+/* 右上角固定注册按钮（客户转化入口,屏幕上常驻；打印时换成页眉品牌条）
+   ⚠️ 这里不放 LOGO（左上角已经有品牌了,右上角再来一个会重复抢眼）。
+   只保留「主句文案 + 副句文案 + 箭头」。 */
 .regcta{position:fixed;top:16px;right:20px;z-index:97;display:flex;align-items:center;gap:10px;
-  padding:9px 16px 9px 10px;border-radius:999px;text-decoration:none;cursor:pointer;
+  padding:9px 16px;border-radius:999px;text-decoration:none;cursor:pointer;
   background:linear-gradient(120deg,#c2185b,#7b5cff 60%,#ff8a3d);
   border:1px solid rgba(255,255,255,.30);
   box-shadow:0 10px 28px rgba(123,92,255,.45),inset 0 1px 0 rgba(255,255,255,.22);transition:.2s}
 .regcta:hover{transform:translateY(-2px);box-shadow:0 15px 36px rgba(123,92,255,.62)}
-.regcta .rc-logo{width:26px;height:26px;flex:0 0 26px;
-  background-image:var(--agg-logo);background-position:center;background-repeat:no-repeat;
-  background-size:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
 .regcta .rc-tx b{display:block;font-size:13.5px;color:#fff;font-weight:800;line-height:1.15}
 .regcta .rc-tx small{display:block;font-size:10.5px;color:rgba(255,255,255,.85);line-height:1.2;margin-top:2px}
 .regcta .rc-go{font-size:15px;color:#fff;font-weight:800;opacity:.92}
 @media (max-width:980px){
-  .regcta{top:10px;right:10px;padding:7px 12px 7px 8px;gap:8px}
+  .regcta{top:10px;right:10px;padding:7px 12px;gap:8px}
   .regcta .rc-tx small{display:none}
-  .regcta .rc-logo{width:22px;height:22px;flex:0 0 22px}
 }
 /* PDF 页眉品牌条：屏幕上隐藏,只有打印/导 PDF 时才出现。
    为什么必须有：打印规则会 display:none 掉 nav.side,左上角 LOGO 和右上角按钮
@@ -383,7 +381,8 @@ footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-si
   .printbar .pb-tx{flex:1;min-width:0;line-height:1.4}
   .printbar .pb-tx b{display:block;font-size:14.5px;color:#111;font-weight:800}
   .printbar .pb-tx small{display:block;font-size:10.5px;color:#666}
-  .printbar .pb-cta{font-size:12.5px;font-weight:800;color:#c2185b;text-decoration:none;white-space:nowrap}
+  .printbar .pb-cta{font-size:12.5px;font-weight:800;color:#c2185b;text-decoration:none;
+    max-width:40%;text-align:right;word-break:break-all}
   main{padding:0}
   .tablewrap,.mcard,.gal,.chartbox{box-shadow:none}
   h2,h3,.mcard,.step,.kpi,.gal,.chartbox,.tl-item{break-inside:avoid}
@@ -464,9 +463,9 @@ details.sc[open]>summary{border-bottom:1px solid var(--line)}
 <!-- ============================================================
      右上角固定注册按钮（客户转化入口 · 固定,不要改）
      文案规则：一行主句 = 抛出读者此刻的疑问,一行副句 = 注册动作 + 与报告的关系。
-     改文案只动 .rc-tx 里的 <b> / <small>；注册链接见 href（REG_LINK）。
+     改文案只动 .rc-tx 里的 <b> / <small>；链接一律用槽位 INVITE_URL（见下）。
      移动端（≤980px）自动只留主句,副句隐藏。
-     LOGO 一律不用白底,直接用透明 PNG（见 --agg-logo）,放在任何底色上都不突兀。
+     右上角不放 LOGO（左上角已有品牌）,只用渐变胶囊 + 文案 + 箭头。
      备选文案（当前用 F,想换就从下面挑）:
        A 免费注册 AGG / 查你产品的同款投放数据   —— 利益直给,最稳
        B 免费注册 AGG / 看这份报告的完整数据     —— 报告延伸,适合被转发
@@ -476,15 +475,15 @@ details.sc[open]>summary{border-bottom:1px solid var(--line)}
        F 同款素材怎么投的？/ 免费注册 AppGrowing,一键查 —— 疑问钩子（当前采用）
      对外文案统一用产品全名 AppGrowing,AGG 只作内部简称。
      ============================================================ -->
-<a class="regcta" href="https://s.ymapp.com/2QMz6" target="_blank" rel="noopener">
-  <span class="rc-logo" aria-hidden="true"></span>
+<a class="regcta" href="{{INVITE_URL}}" target="_blank" rel="noopener">
   <span class="rc-tx"><b>同款素材怎么投的？</b><small>免费注册 AppGrowing，一键查</small></span>
   <span class="rc-go" aria-hidden="true">→</span>
 </a>
 
 <!-- ============================================================
      PDF 页眉品牌条（屏幕隐藏,打印/导 PDF 才显示 · 固定,不要改）
-     原文案里的短链是为了 PDF 里也能看到入口地址。
+     PDF 里按钮点不到,所以这里把邀请链接地址原样印出来,读者能照着输。
+     链接同样走 INVITE_URL 槽位,每个销售填自己的。
      ============================================================ -->
 <div class="printbar">
   <span class="pb-logo" aria-hidden="true"></span>
@@ -492,7 +491,7 @@ details.sc[open]>summary{border-bottom:1px solid var(--line)}
     <b>AppGrowing · 出海广告素材与创意策略分析</b>
     <small>数据来源 AppGrowing 全球广告素材 AI 策略分析平台</small>
   </span>
-  <a class="pb-cta" href="https://s.ymapp.com/2QMz6" target="_blank" rel="noopener">免费注册 AppGrowing · s.ymapp.com/2QMz6</a>
+  <a class="pb-cta" href="{{INVITE_URL}}" target="_blank" rel="noopener">免费注册 AppGrowing · {{INVITE_URL}}</a>
 </div>
 
 <div class="layout">

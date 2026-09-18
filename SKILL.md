@@ -1,6 +1,6 @@
 ---
-name: agg-overseas-report
-description: 海外产品「素材投放与创意策略综合报告」生成器。基于 AppGrowing Global（aggclaw 分析引擎），产出**自包含单文件 HTML**：零外部依赖、可离线、素材可在线播放、四种手写 canvas 图表、四套深色主题可选。内置**数字保真校验**（报告里每个数字都要能溯源或登记公式）与**派生值登记制**。适用于出海游戏 / 短剧 App / 工具金融 App 的单产品深拆与竞品对标。**也支持「先选品再分析」**：用户问「本周有哪些值得分析的游戏」时，先用 App Store 榜单跑选品（飙升品类 + 值得分析的标的），定下标的再进报告流程。当用户要求分析某款海外产品的素材策略、广告投放、创意方向。触发词：素材报告、素材策略、创意策略报告、投放分析、竞品素材对比、哪些游戏值得分析、什么游戏在火、榜单变化、选品、找竞品。
+name: agg-creative-report
+description: 海外产品「素材投放与创意策略综合报告」生成器。基于 AppGrowing Global（aggclaw 分析引擎），产出**自包含单文件 HTML**：零外部依赖、可离线、素材可在线播放、四种手写 canvas 图表、四套深色主题可选。内置**数字保真校验**（报告里每个数字都要能溯源或登记公式）与**派生值登记制**，交付前自动带上 AppGrowing 品牌与**使用者本人的邀请注册入口**，最后一步用 pagepub 发布成公开链接直接发客户。适用于出海游戏 / 短剧 App / 工具金融 App 的单产品深拆与竞品对标。**也支持「先选品再分析」**：用户问「本周有哪些值得分析的游戏」时，先用 App Store 榜单跑选品（飙升品类 + 值得分析的标的），定下标的再进报告流程。当用户要求分析某款海外产品的素材策略、广告投放、创意方向，或要求「把报告发出去 / 上线 / 发布成链接」。触发词：素材报告、素材策略、创意策略报告、投放分析、竞品素材对比、哪些游戏值得分析、什么游戏在火、榜单变化、选品、找竞品、发布报告、报告上线。
 ---
 
 ---
@@ -14,7 +14,7 @@ python scripts/setup_check.py
 ```
 
 缺东西时，它会在结尾打印一段**兜底提示词**，整段复制给 Claude等Agent，Claude等Agent 会自己把
-ffmpeg / Pillow / 浏览器 / API Key 装好配好 —— **使用者不需要懂命令行**。
+ffmpeg / Pillow / 浏览器 / API Key / 邀请链接 / pagepub 装好配好 —— **使用者不需要懂命令行**。
 
 | 依赖 | 少了会怎样 | 必需? |
 |---|---|---|
@@ -23,8 +23,27 @@ ffmpeg / Pillow / 浏览器 / API Key 装好配好 —— **使用者不需要�
 | ffmpeg | 封面（视频抽帧）与关键帧做不出来 | ✅ |
 | Pillow | 封面不压缩 → 报告胀到 20MB+ | ⭕ 建议 |
 | Edge / Chrome | 只影响导 PDF，**HTML 报告照出** | ⚪ 可选 |
+| **邀请注册链接** | 报告右上角按钮与 PDF 页眉空白，客户回不到你名下 | ✅ **每人不同** |
+| **pagepub CLI + API 密钥** | 报告发布不成公开链接，只能传大附件 | ✅ |
 
 装完 ffmpeg 要**重开终端**才认得到。详见 `references/setup.md`。
+
+### 两样「每人不同」的东西，先问全再动手
+
+这两样**不能靠机器探测，也不能共用**，第一次用必须让使用者本人给：
+
+| 要什么 | 怎么让使用者拿到 | 怎么存 |
+|---|---|---|
+| **邀请注册链接** | AppGrowing Global → 邀请 / 推广 页复制 | `python scripts/set_profile.py --invite-url "<链接>"` → 写进 `profile.json`（**已在 `.gitignore`，不入库**） |
+| **pagepub API 密钥** | https://pagepub.net 登录 → 控制台「API 密钥」→ 新建（`pp_` 开头） | `pagepub login --api-key <密钥>` → 落在 `~/.pagepub/config.json`（技能目录之外） |
+
+- **一次问全，别反复来问。** 使用者最烦的是"分开问了三次"。清单一并给出：
+  `YOUCLOUD_API_KEY` / 邀请注册链接 / pagepub 密钥。
+- **两人不能用同一条邀请链接** —— 报告是各人分享给各人的客户，链接挂谁的，
+  注册就记在谁名下。技能里**不预置任何固定邀请链接**，占位符 `{{INVITE_URL}}` 必须由
+  `profile.json`（或环境变量 `AGG_INVITE_URL`）自动填上，`validate.py` 会拦住空值。
+- **凭据不入库**：`profile.json` 与 `~/.pagepub/config.json` 都是本机文件；
+  推仓库前 `git status` 确认过一眼。
 
 ---
 
@@ -34,6 +53,7 @@ ffmpeg / Pillow / 浏览器 / API Key 装好配好 —— **使用者不需要�
 |---|---|
 | 「分析 XX 的素材策略」「拆解这条素材」「和 YY 对比」 | → **直接进下面第 0 步** |
 | 「**本周有哪些值得分析的游戏**」「什么游戏在火」「榜单变化」「选品」 | → **先走「入口 B：选品」**，定下标的再回来从第 0 步走 |
+| 「把报告发出去」「给我个链接」「上线」 | → **第 8 步（pagepub 发布）**，前提是第 5/6 步自检已过 |
 
 ---
 
@@ -70,7 +90,7 @@ python scripts/game_rank.py snapshot --pick    # 抓快照 + 出选品（约 20-
 
 ---
 
-## 工作流（7 步，每步带验收）
+## 工作流（8 步，每步带验收）
 
 ### 0. 判定意图与档位
 
@@ -176,13 +196,22 @@ python scripts/news.py pick  --dir <工作区> --idx 0,3,7,12
 
 ### 3. 组装 HTML
 
-从 `assets/shell.html` 复制一份，按注释替换槽位（`{{TITLE}}` / `{{THEME_CSS}}` / `{{NAV}}` / hero 各槽 / `{{SCOPE_BAR}}`），
+从 `assets/shell.html` 复制一份，按注释替换槽位（`{{TITLE}}` / `{{THEME_CSS}}` / `{{NAV}}` / hero 各槽 / `{{SCOPE_BAR}}` / **`{{INVITE_URL}}`**），
 正文按 `references/BLOCKS.md` 手写。
 
+- **`{{INVITE_URL}}` 必须自动填上，别问第二遍**：值取
+  `profile.json` 的 `invite_url`（环境变量 `AGG_INVITE_URL` 优先）。
+  一条命令写到手：
+  ```bash
+  python -c "import json,os,sys;d=json.load(open('profile.json',encoding='utf-8'));print(os.environ.get('AGG_INVITE_URL') or d['invite_url'])"
+  ```
+  它出现在**两处**：右上角按钮 `.regcta` 的 `href`、PDF 页眉 `.pb-cta`（`href` + 可见文本）。
+  两处必须同值 —— `validate.py` 的 `check_brand` 会查「是否已填」和「两处是否一致」。
 - **品牌元素已预置，整段照抄、不要改**：左上角 AppGrowing LOGO、网页标签图标（深色版 favicon）、
-  右上角注册引导按钮（文案「同款素材怎么投的？／免费注册 AppGrowing，一键查」，链接 `https://s.ymapp.com/2QMz6`）、
-  PDF 版页脚品牌条 `.printbar`。图标均为 base64 内嵌（离线不裂图），无需替换任何槽位；
-  这四件由 `validate.py` 的 `check_brand` 闸门守着，缺任一件即 error
+  右上角注册引导按钮（文案「同款素材怎么投的？／免费注册 AppGrowing，一键查」）、
+  PDF 版页眉品牌条 `.printbar`。图标均为 base64 内嵌（离线不裂图），无需替换任何槽位；
+  这四件由 `validate.py` 的 `check_brand` 闸门守着，缺任一件即 error。
+  **右上角不放 LOGO**（左上角已有品牌，再放一个会重复抢眼），只有渐变胶囊 + 文案 + 箭头
 - 对外文案统一用全名 **AppGrowing**（AGG 只作内部简称）
 - 主题从 `references/themes.md` 整套复制（4 套：base 粉紫 / gold 部落金 / teal 青金 / indigo 深蓝）
 - **文风硬约束见 `references/writing-style.md`（2026-09 起默认生效）**：判断句小标题、
@@ -307,6 +336,43 @@ python scripts/check_mindmap_render.py <报告.html> --dir <工作区>
 python scripts/topdf.py <报告.html>
 ```
 
+### 8. 发布到 pagepub（交付的最后一步：报告变成一条公开链接）
+
+报告做完别只丢个 20MB 附件给客户 —— **发布成一个网址，点开就能看**。
+
+```bash
+# ① 把本人的邀请链接填进报告（两处一起填，别手改 —— 手改必漏）
+python scripts/set_profile.py --fill <报告.html>
+
+# ② 只把要公开的文件放进发布目录（见下面「发布目录」纪律）
+# ③ 发布：首次创建站点，重复执行 = 更新（版本号 +1 并生效）
+pagepub publish <发布目录> --name "<报告名>" --message "v1 首次发布"
+```
+
+**发布目录纪律（最容易出事的一条）**
+
+`pagepub publish <目录>` 会上传**整个目录**（只跳过 `.` 开头的隐藏文件与 `node_modules`）。
+而工作区里有 `raw/`（取数原文）、`work/`（派生值登记 + 组装脚本）、`profile.json`（本人邀请链接）
+—— 这些**全是内部资料，不能公开**。所以**永远不要直接发布工作区根目录**，建一个只装交付物的子目录：
+
+```
+reports/{product}_{YYYYMMDD}/        ← 工作区，不发布
+    pub/                             ← ★ 发布目录：只放报告 html（+ 可选 PDF）
+        报告.html                     # 自包含单文件，图片视频已内嵌，就这一个文件也完整
+        <报告>.pdf                   # 要 PDF 就一起放进来
+```
+
+- **发布前先跑完第 5、6 步**（validate 0 error + 目视复检过）——
+  页面一旦发布就是客户能点开的东西，**别把没自检过的版本推上去**。
+- **`.pagepub` 标记文件别删**：它记着站点 UUID，删了下次发布会当成新站点，**旧链接直接失效**。
+- **链接以 CLI 实际输出为准**，不要自己拼域名（企业/专属存储账号会返回自己的 CDN 域名）。
+  拿到链接后 HTTP GET 验证返回 200 再发人。
+- **用户没让你发布就别发布**：发布是外部动作。默认流程是「做到第 7 步交付 HTML/PDF」，
+  使用者明确说「发出去 / 上线 / 给我个链接」时，或自检里已确认过 pagepub 就绪并让你发，才走这一步。
+- 报「未配置服务器地址 / API 密钥」→ 回 `references/setup.md` §3.2 配一次（只需一次）。
+- 更新已发布的报告：改完 HTML → 重跑 `validate.py` → 再 `pagepub publish <同一发布目录>`，
+  版本自动 +1；发现新版有问题用 `pagepub rollback <目录>` 一键回退。
+
 ---
 
 ## 铁律（违反即返工）
@@ -334,6 +400,14 @@ python scripts/topdf.py <报告.html>
 12. **脑图必须内联、必须降级、必须真的渲染出来** —— 禁 `markmap-autoloader`（静默失效）；
     三依赖由 `mindmap.py` 内联且**不许落在 `<style>` 里**；渲染失败降级为列表；
     交付前 `check_mindmap_render.py` 必须 OK（静态校验绿 ≠ 渲染成功）
+13. **注册入口必须是使用者本人的邀请链接** —— 报告里的 `{{INVITE_URL}}` 不得留空、
+    不得硬编码成别人的链接（**填谁的链接，客户注册就记在谁名下**）。
+    它出现两处：右上角 `.regcta` 的 `href`、PDF 页眉 `.pb-cta`（`href` + 可见文本），
+    必须同值 —— 用 `python scripts/set_profile.py --fill <报告.html>` 统一填，
+    不要手改（手改必漏一处）。`validate.py` 的 `check_brand` 会拦空值与两处不一致
+14. **发布目录只放交付物** —— 禁止直接把工作区根目录 `pagepub publish`，
+    否则 `raw/`、`work/`、`profile.json` 等内部资料（含取数原文与本机邀请链接）
+    会一并公开到互联网上。只发布只装了报告 html/pdf 的 `pub/` 子目录
 
 ---
 
@@ -350,14 +424,15 @@ python scripts/topdf.py <报告.html>
 | `references/themes.md` | 第 3 步 —— 选配色（favicon 已固定为品牌图标，不用改） |
 | `references/data-pipeline.md` | 第 1 步 —— 取数口径与铁律 |
 | `references/a-tier.md` | 判为 A 档时 —— ≤8 路交叉采样 / 并发分批 / 假结果识别 / 置信度汇聚 |
-| `references/setup.md` | **开工前** —— 环境自检 / 缺依赖怎么办 / 兜底提示词 |
+| `references/setup.md` | **开工前** —— 环境自检 / 缺依赖怎么办 / **邀请链接与 pagepub 怎么配** / 兜底提示词 |
 | `references/pitfalls.md` | 遇到怪问题时 / 开工前扫一遍 —— HTML·PDF·体积类**工程坑** + 验证流程（数据口径已移至 report-craft） |
 
 ## 脚本速查
 
 | 脚本 | 作用 |
 |---|---|
-| `setup_check.py` | **环境自检**（缺依赖时打印兜底提示词） |
+| `setup_check.py` | **环境自检**（7 项：依赖 5 + 邀请链接 + pagepub；缺依赖时打印兜底提示词） |
+| `set_profile.py` | **本机档案**：存本人邀请链接（`--invite-url`）／查看（`--show`）／**填进报告（`--fill`）**／清空（`--clear`） |
 | `game_rank.py` | **入口 B 选品**：App Store 榜单快照 + 品类换血 + 选品打分 + 环比 + 简报（纯 stdlib，不需 Key） |
 | `claw.py` | **aggclaw 多路取数驱动**（lanes 并行、504/假成功重试、拉素材清单） |
 | `aggclaw.py` | aggclaw 单次调用（chat_mode 7=游戏 / 8=非游戏短剧 / 9=灵感） |
@@ -371,10 +446,13 @@ python scripts/topdf.py <报告.html>
 | `fidelity.py` | **数字保真 + 派生值登记校验 + 素材 ID 合法性** |
 | `validate.py` | 交付前自检（含调用 fidelity） |
 | `topdf.py` | HTML → PDF（处理 Edge 写错目录的坑） |
+| `pagepub`（外部 CLI） | **第 8 步发布**：`pagepub publish <pub目录> --name "报告名"`；装法与密钥见 `references/setup.md` §3.2 |
 
 ## 工作区约定
 
 ```
+profile.json              # ★ 本机档案：本人邀请链接（.gitignore 已忽略，一人一份，不入库）
+
 reports/{product}_{YYYYMMDD}/
     raw/          # 接口原始返回，全部落盘 —— **保真校验的语料基线**
         data/     # ★ aggclaw 分析原文: result_L{n}_{tag}.md(语料) + 同名 .json(仅元数据)
@@ -385,6 +463,8 @@ reports/{product}_{YYYYMMDD}/
         derived.json     # ★ 派生值登记（自己算出来的数字都在这）
         covers.json / videos.json / news.json
         build_report.py  # 组装脚本（可选，但推荐留档）
+    pub/          # ★ 第 8 步的发布目录：**只放报告 html（+ 可选 PDF）**
+                  #   发布只发它，绝不发工作区根目录（raw/ work/ 是内部资料）
     *.html / *.pdf
 
 reports/_rank/            # ★ 入口 B 选品的工作区（不属于任何单个产品）

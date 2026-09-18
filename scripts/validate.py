@@ -592,7 +592,13 @@ def check_offline(h, r):
         hosts -= {"appgrowing.ai", "www.appgrowing.ai",
                   "appgrowing-global.youcloud.com", "news.google.com",
                   "www.w3.org",
-                  "s.ymapp.com"}          # 官方注册短链(右上角 .regcta 的 href)
+                  "s.ymapp.com"}          # 官方注册短链(历史写法,仍在白名单)
+        # 邀请注册链接由每个销售自带,域名不固定 —— 动态剔掉,免得每次多报一条
+        # 无意义的「白名单外域名」,把真正需要看的被引链接淹掉。
+        m_inv = re.search(r'class="[^"]*\bregcta\b[^"]*"[^>]*href="https?://([^"/?#]+)',
+                          m)
+        if m_inv:
+            hosts.discard(m_inv.group(1))
         hosts = {d for d in hosts if not d.endswith(".appgrowing.ai")}
         r.ok("CDN 外链 = 0")
         if hosts:
@@ -632,10 +638,35 @@ def check_brand(h, r):
     body = re.sub(r"<!--.*?-->", " ", body, flags=re.S)
 
     misses = []
-    if not re.search(r'<a[^>]*class="[^"]*\bregcta\b', body):
+    # 注册邀请链接:每个销售填自己那条(见 references/setup.md),所以**不能**查固定短链,
+    # 只能查「有没有填上」+「两处是不是同一条」。
+    reg = re.search(r'<a[^>]*class="[^"]*\bregcta\b[^"]*"[^>]*>', body)
+    reg_href = ""
+    if not reg:
         misses.append("右上角注册引导按钮 .regcta 缺失")
-    elif "s.ymapp.com/2QMz6" not in body:
-        misses.append("注册按钮链接不是官方短链 s.ymapp.com/2QMz6")
+    else:
+        m_href = re.search(r'href="([^"]*)"', reg.group(0))
+        reg_href = (m_href.group(1) if m_href else "").strip()
+        if not reg_href or reg_href.startswith("{{"):
+            misses.append("右上角注册按钮 href 还是空槽位"
+                          "—— 必须填销售本人的邀请注册链接 INVITE_URL")
+        elif not re.match(r"https?://", reg_href):
+            misses.append("注册按钮链接不是 http(s) 地址:%s" % reg_href[:40])
+
+    pb = re.search(r'<a[^>]*class="[^"]*\bpb-cta\b[^"]*"[^>]*>', body)
+    if not pb:
+        misses.append("PDF 页眉品牌条里的注册链接 .pb-cta 缺失"
+                      "(PDF 里按钮点不到,只能靠这行地址导流)")
+    else:
+        m_pb = re.search(r'href="([^"]*)"', pb.group(0))
+        pb_href = (m_pb.group(1) if m_pb else "").strip()
+        if not pb_href or pb_href.startswith("{{"):
+            misses.append("PDF 页眉注册链接还是空槽位")
+        elif not re.match(r"https?://", pb_href):
+            misses.append("PDF 页眉链接不是 http(s) 地址:%s" % pb_href[:40])
+        elif reg_href and pb_href != reg_href:
+            misses.append("PDF 页眉链接与右上角按钮链接不一致(两处必须是同一条邀请链接)")
+
     if not re.search(r'class="[^"]*\bprintbar\b', body):
         misses.append("PDF 页脚品牌条 .printbar 缺失"
                       "(打印时 LOGO 与按钮会被 display:none,只剩它能露品牌)")
@@ -648,7 +679,8 @@ def check_brand(h, r):
         r.err("品牌/转化入口不完整:%s —— 整段照抄 shell.html,不要删改。"
               % ";".join(misses))
     else:
-        r.ok("品牌与注册入口齐备(LOGO / favicon / .regcta / .printbar)")
+        r.ok("品牌与注册入口齐备(LOGO / favicon / .regcta / .printbar),"
+             "邀请链接已填:%s" % reg_href)
 
 
 def check_source_badge(h, r):

@@ -779,7 +779,7 @@ def write_brief(path, picks, cats, snap, wo, up=None, down=None, prev_ts=None,
             L.append("")
 
     H("下一步")
-    L.append("选定标的直接进 `agg-overseas-report` 原报告流程"
+    L.append("选定标的直接进 `agg-creative-report` 原报告流程"
              "（第 0 步判意图 → 第 1 步 aggclaw 取数 → …）。")
     if not prev_ts:
         L.append("")
